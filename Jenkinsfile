@@ -15,11 +15,19 @@ pipeline {
         }
         
         
-        stage("Build Docker Image") {
+      stage('Build Docker Image') {
             steps {
                 script {
                     // Build the Docker image
                     sh 'docker build -t my-backend-image:latest .'
+                }
+            }
+        }
+    stage('Run Docker Container') {
+            steps {
+                script {
+                    // Run the Docker container
+                    sh 'docker run --name my-backend-container -d my-backend-image:latest'
                 }
             }
         }
