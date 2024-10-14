@@ -5,7 +5,7 @@
   "scripts": {
     "start": "nodemon  --env-file=.env.developement  ./bin/www",
     "build": "npm run build",
-    "dev":"nodemon --env-file=.env.production ./bin/www"
+    "dev": "nodemon --env-file=.env.production ./bin/www"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
@@ -16,5 +16,9 @@
     "mongoose": "^8.7.1",
     "morgan": "~1.9.1",
     "nodemon": "^3.1.7"
+  },
+  "devDependencies": {
+    "webpack": "^5.95.0",
+    "webpack-cli": "^5.1.4"
   }
 }
