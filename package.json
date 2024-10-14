@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "nodemon  --env-file=.env.developement  ./bin/www",
-    "build": "npm run build",
+    "build": "webpack --config webpack.config.js",
     "dev":"nodemon --env-file=.env.production ./bin/www"
   },
   "dependencies": {
