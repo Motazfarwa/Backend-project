@@ -13,10 +13,35 @@ pipeline {
                 sh 'npm install' 
             }
         }
-        stage("Build"){
-            steps{
-               sh 'npm run build'
+        
+        stage("Build") {
+            steps {
+                sh 'npm run build'
             }
+        }
+        
+        stage("Build Docker Image") {
+            steps {
+                script {
+                    // Build the Docker image
+                    sh 'docker build -t my-backend-image:latest .'
+                }
+            }
+        }
+
+        // Optional: Add a stage to run tests or any other steps if needed
+        stage("Run Tests") {
+            steps {
+                // Add test commands if needed
+                // sh 'npm test'
+            }
+        }
+    }
+    
+    post {
+        always {
+            // Clean up resources or notify after the build
+            echo 'Build completed.'
         }
     }
 }
