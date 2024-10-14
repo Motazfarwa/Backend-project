@@ -1,27 +1,10 @@
 pipeline {
-    agent {
-        docker {
-            image 'node:latest' // Use an official Node.js image
-            args '-u root' // Run as root if needed
-        }
-    }
+    agent any
 
     stages {
-        stage("Checkout") {
+        stage("Docker Info") {
             steps {
-                checkout scm
-            }
-        }
-        
-        stage("Test") {
-            steps {
-                sh 'npm test'
-            }
-        }
-        
-        stage("Build") {
-            steps {
-                sh 'npm run build'
+                sh 'docker info' // This should return Docker information
             }
         }
     }
