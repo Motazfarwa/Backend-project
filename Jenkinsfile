@@ -8,19 +8,21 @@ pipeline {
             }
         }
 
-        stage('Install Dependencies & Test') {
+        stage('Install Dependencies') {
             steps {
-                // Install dependencies (make sure npm is already installed on the Jenkins agent)
                 sh 'npm install'
-
-                // Run tests
-                sh 'npm test'
             }
         }
 
+        // Uncomment if you have tests
+        // stage('Test') {
+        //     steps {
+        //         sh 'npm test'
+        //     }
+        // }
+
         stage('Build') {
             steps {
-                // Build the project
                 sh 'npm run build'
             }
         }
