@@ -1,12 +1,11 @@
 pipeline {
-    agent {
+    agent any  // Specify the agent (any available agent)
+    
     stages {
         stage("Checkout") {
             steps {
-                checkout scm
+                checkout scm // Check out source code from SCM
             }
         }
-    
     }
-}
 }
