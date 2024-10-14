@@ -1,11 +1,11 @@
 pipeline {
-    agent any
-
+    agent {
     stages {
-        stage("Docker Info") {
+        stage("Checkout") {
             steps {
-                sh 'docker info' // This should return Docker information
+                checkout scm
             }
         }
+    
     }
 }
