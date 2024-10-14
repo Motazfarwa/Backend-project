@@ -10,7 +10,7 @@ pipeline {
 
         stage('Install Dependencies & Test') {
             steps {
-                sh 'npm install'
+                sh 'sudo apt install npm'
                 sh 'npm test'
             }
         }
