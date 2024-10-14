@@ -4,13 +4,18 @@ pipeline {
     stages {
         stage("Checkout") {
             steps {
-                checkout scm // Check out source code from SCM
+                checkout scm 
             }
         }
 
         stage("Install Dependencies") {
             steps {
-                sh 'npm install' // Install all dependencies
+                sh 'npm install' 
+            }
+        }
+        stage("Build"){
+            steps{
+               sh 'npm run build'
             }
         }
     }
