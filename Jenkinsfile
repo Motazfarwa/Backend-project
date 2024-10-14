@@ -2,26 +2,19 @@ pipeline {
     agent any
 
     stages {
-        stage('Checkout') {
+        stage("Checkout") {
             steps {
                 checkout scm
             }
         }
-
-        stage('Install Dependencies') {
+          stage("Test") {
             steps {
-                sh 'npm install'
+                sh 'apt install npm'
+                sh 'npm test'
             }
         }
-
-        // Uncomment if you have tests
-        // stage('Test') {
-        //     steps {
-        //         sh 'npm test'
-        //     }
-        // }
-
-        stage('Build') {
+        
+        stage("Build") {
             steps {
                 sh 'npm run build'
             }
