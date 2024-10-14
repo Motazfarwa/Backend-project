@@ -28,14 +28,6 @@ pipeline {
                 }
             }
         }
-
-        // Optional: Add a stage to run tests or any other steps if needed
-        stage("Run Tests") {
-            steps {
-                // Add test commands if needed
-                // sh 'npm test'
-            }
-        }
     }
     
     post {
