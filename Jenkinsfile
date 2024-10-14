@@ -13,11 +13,5 @@ pipeline {
                 sh 'npm install' // Install all dependencies
             }
         }
-
-        stage("Build") {
-            steps {
-                sh 'npm run build' // Build the project
-            }
-        }
     }
 }
