@@ -1,5 +1,10 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'node:latest' // Use an official Node.js image
+            args '-u root' // Run as root if needed
+        }
+    }
 
     stages {
         stage("Checkout") {
@@ -7,9 +12,9 @@ pipeline {
                 checkout scm
             }
         }
-          stage("Test") {
+        
+        stage("Test") {
             steps {
-                sh 'apt install npm'
                 sh 'npm test'
             }
         }
