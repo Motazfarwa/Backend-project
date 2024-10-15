@@ -5,11 +5,19 @@ pipeline {
             args '--privileged -v /var/run/docker.sock:/var/run/docker.sock' // Bind mount the Docker socket
         }
     }
-    
+
     stages {
         stage("Checkout") {
             steps {
                 checkout scm // Checkout code from the source control
+            }
+        }
+
+        stage("Install Node.js and npm") {
+            steps {
+                script {
+                    sh 'apk add --no-cache nodejs npm' // Install Node.js and npm
+                }
             }
         }
 
