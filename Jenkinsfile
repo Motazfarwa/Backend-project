@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'node:20.12.0' // Use a Node.js image
+            image 'node:18' // Use a Node.js image
             args '-v /var/run/docker.sock:/var/run/docker.sock' // Bind mount the Docker socket
         }
     }
@@ -10,6 +10,18 @@ pipeline {
         stage("Checkout") {
             steps {
                 checkout scm // Checkout code from the source control
+            }
+        }
+
+        stage("Install Docker") {
+            steps {
+                script {
+                    // Update package list and install Docker
+                    sh '''
+                    apt-get update
+                    apt-get install -y docker.io
+                    '''
+                }
             }
         }
 
