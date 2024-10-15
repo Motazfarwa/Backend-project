@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'node:18' // Use a Node.js image
-            args '-v /var/run/docker.sock:/var/run/docker.sock' // Bind mount the Docker socket
+            args '-v /var/run/docker.sock:/var/run/docker.sock --user root' // Run as root
         }
     }
 
@@ -18,8 +18,8 @@ pipeline {
                 script {
                     // Update package list and install Docker
                     sh '''
-                    sudo apt-get update
-                    sudo  apt-get install -y docker.io
+                    apt-get update
+                    apt-get install -y docker.io
                     '''
                 }
             }
