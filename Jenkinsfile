@@ -1,11 +1,11 @@
 pipeline {
     agent {
-      docker {
-        image 'jenkins/jenkins:lts' // Jenkins agent with Docker
-        args '-v /var/run/docker.sock:/var/run/docker.sock' 
-           }
+        docker {
+            image 'node:18' // Use a Node.js image
+            args '-v /var/run/docker.sock:/var/run/docker.sock' // Bind mount the Docker socket
+        }
     }
-    
+
     stages {
         stage("Checkout") {
             steps {
@@ -15,14 +15,22 @@ pipeline {
 
         stage("Install Dependencies") {
             steps {
-                sh 'npm install' // Install Node.js dependencies
+                script {
+                    // Check if npm is available
+                    sh 'npm -v'
+                    // Install Node.js dependencies
+                    sh 'npm install'
+                }
             }
         }
 
         stage("Build Docker Image") {
             steps {
                 script {
-                    sh 'docker build -t my-backend-image:latest .' // Build the Docker image
+                    // Check if Docker is available
+                    sh 'docker --version'
+                    // Build the Docker image
+                    sh 'docker build -t my-backend-image:latest .'
                 }
             }
         }
@@ -30,7 +38,8 @@ pipeline {
         stage("Run Docker Container") {
             steps {
                 script {
-                    sh 'docker run -d --name my-backend-container my-backend-image:latest' // Run the Docker container
+                    // Run the Docker container
+                    sh 'docker run -d --name my-backend-container my-backend-image:latest'
                 }
             }
         }
