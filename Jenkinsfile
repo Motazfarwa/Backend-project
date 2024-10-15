@@ -1,23 +1,15 @@
 pipeline {
     agent {
         docker {
-            image 'docker:19.03.12-dind' // Use Docker-in-Docker image
-            args '--privileged -v /var/run/docker.sock:/var/run/docker.sock' // Bind mount the Docker socket
+            image 'node:18' // Use a Node.js image with npm
+            args '-v /var/run/docker.sock:/var/run/docker.sock' // Bind mount the Docker socket if needed
         }
     }
-
+    
     stages {
         stage("Checkout") {
             steps {
                 checkout scm // Checkout code from the source control
-            }
-        }
-
-        stage("Install Node.js and npm") {
-            steps {
-                script {
-                    sh 'apk add --no-cache nodejs npm' // Install Node.js and npm
-                }
             }
         }
 
