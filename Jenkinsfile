@@ -1,9 +1,9 @@
 pipeline {
     agent {
-        docker {
-            image 'node:18' // Use a Node.js image with npm
-            args '-v /var/run/docker.sock:/var/run/docker.sock' // Bind mount the Docker socket if needed
-        }
+      docker {
+        image 'jenkins/jenkins:lts' // Jenkins agent with Docker
+        args '-v /var/run/docker.sock:/var/run/docker.sock' 
+           }
     }
     
     stages {
