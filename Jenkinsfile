@@ -1,39 +1,57 @@
 pipeline {
     agent {
         docker {
-            image 'docker:19.03.12-dind' // Use a specific Docker-in-Docker image
-            args '-v /var/run/docker.sock:/var/run/docker.sock' // Bind mount the Docker socket
+            image 'node:18' // Use a Node.js image
+            args '-v /var/run/docker.sock:/var/run/docker.sock' // Optional: Bind mount the Docker socket for Docker commands
         }
     }
+    
     stages {
         stage("Checkout") {
             steps {
+                // Checkout code from the source control
                 checkout scm 
             }
         }
+
         stage("Install Dependencies") {
             steps {
-                sh 'npm install' 
+                // Install Node.js dependencies
+                sh 'npm install'
             }
         }
-        stage('Build Docker Image') {
+
+        stage("Build Docker Image") {
             steps {
                 script {
+                    // Build the Docker image
                     sh 'docker build -t my-backend-image:latest .'
                 }
             }
         }
-        stage('Run Docker Container') {
+
+        stage("Run Docker Container") {
             steps {
                 script {
-                    sh 'docker run -d my-backend-image:latest'
+                    // Run the Docker container in detached mode
+                    sh 'docker run -d --name my-backend-container my-backend-image:latest'
                 }
             }
         }
     }
+
     post {
         always {
+            // Clean up resources or notify after the build
             echo 'Build completed.'
+        }
+
+        success {
+            echo 'Build was successful!'
+        }
+
+        failure {
+            echo 'Build failed. Check the logs for more information.'
         }
     }
 }
