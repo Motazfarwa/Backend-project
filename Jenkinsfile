@@ -6,6 +6,11 @@ pipeline {
         }
     }
 
+    environment {
+        DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials-id') // Docker Hub credentials stored in Jenkins
+        DOCKER_HUB_REPO = 'mootezfarwa/noderepo' // Docker Hub repo name
+    }
+
     stages {
         stage("Checkout") {
             steps {
@@ -47,7 +52,6 @@ pipeline {
             }
         }
 
-    
         stage("Run Docker Container") {
             steps {
                 script {
@@ -66,6 +70,21 @@ pipeline {
                     // Run the Docker container
                     echo "Starting a new container ${containerName}."
                     sh "docker run -d --name ${containerName} my-backend-image:latest"
+                }
+            }
+        }
+
+        stage("Push Docker Image to Docker Hub") {
+            steps {
+                script {
+                    // Tag the Docker image for Docker Hub
+                    sh "docker tag my-backend-image:latest ${DOCKER_HUB_REPO}:latest"
+
+                    // Log in to Docker Hub
+                    sh "echo ${DOCKER_HUB_CREDENTIALS_PSW} | docker login -u ${DOCKER_HUB_CREDENTIALS_USR} --password-stdin"
+
+                    // Push the Docker image to Docker Hub
+                    sh "docker push ${DOCKER_HUB_REPO}:latest"
                 }
             }
         }
