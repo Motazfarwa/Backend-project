@@ -47,11 +47,25 @@ pipeline {
             }
         }
 
+    
         stage("Run Docker Container") {
             steps {
                 script {
+                    // Container name
+                    def containerName = "my-backend-container"
+                    
+                    // Check if the container exists
+                    def containerExists = sh(script: "docker ps -a -q -f name=${containerName}", returnStdout: true).trim()
+
+                    // Remove the existing container if it exists
+                    if (containerExists) {
+                        echo "Container ${containerName} already exists. Removing it."
+                        sh "docker rm -f ${containerName}" // Force remove the container
+                    }
+
                     // Run the Docker container
-                    sh 'docker run -d --name my-backend-container my-backend-image:latest'
+                    echo "Starting a new container ${containerName}."
+                    sh "docker run -d --name ${containerName} my-backend-image:latest"
                 }
             }
         }
