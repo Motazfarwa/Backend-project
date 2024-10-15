@@ -1,23 +1,7 @@
-# Use a base image
-FROM node:14
+FROM node:20.12.0
 
-# Set the working directory
-WORKDIR /usr/src/app
+# Install Docker
+RUN apt-get update && apt-get install -y docker.io && rm -rf /var/lib/apt/lists/*
 
-# Copy package.json and package-lock.json
-COPY package*.json ./
-
-# Install dependencies
-RUN npm install
-
-# Copy the rest of the application code
-COPY . .
-
-# Build the application
-RUN npm run build
-
-# Expose the application port
-EXPOSE 3000
-
-# Start the application
-CMD ["npm", "start"]
+# Enable Docker service
+RUN systemctl enable docker
