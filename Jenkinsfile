@@ -45,7 +45,7 @@ pipeline {
                     // Pull and run SonarQube container
                     sh '''
                         docker pull sonarqube:latest
-                        docker run -d --name sonarqube-container -p 9000:9000 sonarqube:latest
+                        docker run -d --name sonarqube-container -p 9001:9001 sonarqube:latest
                     '''
                 }
             }
