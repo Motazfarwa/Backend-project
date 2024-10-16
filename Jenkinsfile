@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'node:20.12.0' // Use a Node.js image
-            args '-v /var/run/docker.sock:/var/run/docker.sock --privileged' // Run as root
+            args '-v /var/run/docker.sock:/var/run/docker.sock --privileged' // Run as root and allow access to Docker
         }
     }
 
@@ -14,19 +14,7 @@ pipeline {
     stages {
         stage("Checkout") {
             steps {
-                checkout scm // Checkout code from the source control
-            }
-        }
-
-        stage("Install Docker") {
-            steps {
-                script {
-                    // Update package list and install Docker
-                    sh '''
-                    apt-get update
-                    apt-get install -y docker.io
-                    '''
-                }
+                checkout scm // Checkout code from source control
             }
         }
 
@@ -88,7 +76,7 @@ pipeline {
                 }
             }
         }
-     }
+    }
 
     post {
         always {
