@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'node:20.12.0' // Use a Node.js image
-            args '-v /var/run/docker.sock:/var/run/docker.sock --privileged' // Run as root and allow access to Docker
+            args '-v /var/run/docker.sock:/var/run/docker.sock --user root' // Run as root
         }
     }
 
@@ -14,7 +14,7 @@ pipeline {
     stages {
         stage("Checkout") {
             steps {
-                checkout scm // Checkout code from source control
+                checkout scm // Checkout code from the source control
             }
         }
 
@@ -46,17 +46,16 @@ pipeline {
                     // Container name
                     def containerName = "my-backend-container"
                     
-                    // Check if the container exists
+                    // Check if the container exists and remove it if necessary
                     def containerExists = sh(script: "docker ps -a -q -f name=${containerName}", returnStdout: true).trim()
 
-                    // Remove the existing container if it exists
                     if (containerExists) {
-                        echo "Container ${containerName} already exists. Removing it."
-                        sh "docker rm -f ${containerName}" // Force remove the container
+                        echo "Removing existing container: ${containerName}"
+                        sh "docker rm -f ${containerName}"
                     }
 
                     // Run the Docker container
-                    echo "Starting a new container ${containerName}."
+                    echo "Starting a new container: ${containerName}"
                     sh "docker run -d --name ${containerName} my-backend-image:latest"
                 }
             }
@@ -76,7 +75,7 @@ pipeline {
                 }
             }
         }
-    }
+     }
 
     post {
         always {
