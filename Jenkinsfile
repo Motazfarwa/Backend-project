@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'node:20.12.0' // Use a Node.js image
-            args '-v /var/run/docker.sock:/var/run/docker.sock --user root' // Run as root
+            args '-v /var/run/docker.sock:/var/run/docker.sock --privileged --user root' // Run as root with privileged access
         }
     }
 
@@ -43,10 +43,7 @@ pipeline {
         stage("Run Docker Container") {
             steps {
                 script {
-                    // Container name
                     def containerName = "my-backend-container"
-                    
-                    // Check if the container exists and remove it if necessary
                     def containerExists = sh(script: "docker ps -a -q -f name=${containerName}", returnStdout: true).trim()
 
                     if (containerExists) {
@@ -54,7 +51,6 @@ pipeline {
                         sh "docker rm -f ${containerName}"
                     }
 
-                    // Run the Docker container
                     echo "Starting a new container: ${containerName}"
                     sh "docker run -d --name ${containerName} my-backend-image:latest"
                 }
