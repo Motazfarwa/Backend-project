@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'node:18' // Use a Node.js image
+            image 'node:20.12.0' // Use a Node.js image
             args '-v /var/run/docker.sock:/var/run/docker.sock --privileged' // Run as root
         }
     }
