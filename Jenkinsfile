@@ -47,25 +47,34 @@ pipeline {
             }
         }
 
-    
-        stage("Run Docker Container") {
+        stage("Extract Kubernetes Token") {
             steps {
                 script {
-                    // Container name
-                    def containerName = "my-backend-container"
-                    
-                    // Check if the container exists
-                    def containerExists = sh(script: "docker ps -a -q -f name=${containerName}", returnStdout: true).trim()
+                    // Path to the Kubernetes service account token
+                    def tokenPath = "/var/run/secrets/kubernetes.io/serviceaccount/token"
 
-                    // Remove the existing container if it exists
-                    if (containerExists) {
-                        echo "Container ${containerName} already exists. Removing it."
-                        sh "docker rm -f ${containerName}" // Force remove the container
-                    }
+                    // Read the token from the file
+                    def token = sh(script: "cat ${tokenPath}", returnStdout: true).trim()
 
-                    // Run the Docker container
-                    echo "Starting a new container ${containerName}."
-                    sh "docker run -d --name ${containerName} my-backend-image:latest"
+                    // Print the token (for debugging purposes, you might want to remove this)
+                    echo "Extracted Kubernetes Token: ${token}"
+
+                    // Set the token as an environment variable for use in the deployment stage
+                    env.KUBE_TOKEN = token
+                }
+            }
+        }
+
+        stage("Deploy Docker Image to Kubernetes") {
+            steps {
+                script {
+                    // Use the Kubernetes token to deploy the Docker image
+                    // Make sure to set your Kubernetes context appropriately if necessary
+                    sh '''
+                    kubectl config set-credentials jenkins --token=${KUBE_TOKEN}
+                    kubectl config set-context --current --user=jenkins
+                    kubectl apply -f k8s/deployment.yaml // Adjust the path to your Kubernetes manifests
+                    '''
                 }
             }
         }
