@@ -17,6 +17,19 @@ pipeline {
             }
         }
 
+        stage("Install Docker") {
+            steps {
+                script {
+                    // Update package list and install Docker
+                    sh '''
+                    apt-get update
+                    apt-get install -y docker.io
+                    '''
+                }
+            }
+        }
+
+
         stage("Install Dependencies") {
             steps {
                 script {
