@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'node:18'
-            args '-v /var/run/docker.sock:/var/run/docker.sock' // Bind Docker socket
+            args '-v /var/run/docker.sock:/var/run/docker.sock --user root' // Bind Docker socket
         }
     }
 
@@ -42,37 +42,6 @@ pipeline {
             steps {
                 script {
                     sh 'docker build -t my-backend-image:latest .'
-                }
-            }
-        }
-
-        stage("Run Application Container") {
-            steps {
-                script {
-                    // Stop and remove any existing container with the same name
-                    sh '''
-                        if [ $(docker ps -a -q -f name=my-backend-container) ]; then
-                            docker stop my-backend-container
-                            docker rm my-backend-container
-                        fi
-                    '''
-                    // Run the application container
-                    sh 'docker run -d --name my-backend-container my-backend-image:latest'
-                }
-            }
-        }
-
-        stage("SonarQube Scan") {
-            steps {
-                script {
-                    // Run SonarQube analysis (add sonar-scanner CLI configuration here)
-                    sh '''
-                        sonar-scanner \
-                        -Dsonar.projectKey=myproject \
-                        -Dsonar.sources=. \
-                        -Dsonar.host.url=http://localhost:9000 \
-                        -Dsonar.login=your-sonar-token
-                    '''
                 }
             }
         }
