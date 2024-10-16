@@ -39,22 +39,32 @@ pipeline {
             }
         }
 
-        stage("Start SonarQube") {
-            steps {
-                script {
-                    // Pull and run SonarQube container
-                    sh '''
-                        docker pull sonarqube:latest
-                        docker run -d --name sonarqube-container -p 9001:9001 sonarqube:latest
-                    '''
-                }
-            }
-        }
-
         stage("Build Docker Image") {
             steps {
                 script {
                     sh 'docker build -t my-backend-image:latest .'
+                }
+            }
+        }
+
+         stage("Run Docker Container") {
+            steps {
+                script {
+                    // Container name
+                    def containerName = "my-backend-container"
+                    
+                    // Check if the container exists
+                    def containerExists = sh(script: "docker ps -a -q -f name=${containerName}", returnStdout: true).trim()
+
+                    // Remove the existing container if it exists
+                    if (containerExists) {
+                        echo "Container ${containerName} already exists. Removing it."
+                        sh "docker rm -f ${containerName}" // Force remove the container
+                    }
+
+                    // Run the Docker container
+                    echo "Starting a new container ${containerName}."
+                    sh "docker run -d --name ${containerName} my-backend-image:latest"
                 }
             }
         }
