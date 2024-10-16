@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app-deployment
+  labels:
+    app: my-app
+spec:
+  replicas: 3  # Number of pod replicas
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+      - name: my-app-container
+        image: my-backend-image:latest  # Replace with your Docker image
+        ports:
+        - containerPort: 4000  # The port on which your application runs
+        # env:  # If you have environment variables to set, add them here
+        # - name: NODE_ENV
+        #   value: "production"
+  
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-app-service
+spec:
+  selector:
+    app: my-app
+  ports:
+    - protocol: TCP
+      port: 80  # The port your service will be exposed on
+      targetPort: 80  # The container port your app listens to
+  type: LoadBalancer  # Expose the service as a LoadBalancer for external access
