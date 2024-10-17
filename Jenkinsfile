@@ -1,19 +1,20 @@
 pipeline {
     agent {
         docker {
-            image 'node:18'
-            args '-v /var/run/docker.sock:/var/run/docker.sock --user root' // Bind Docker socket
+            image 'node:20.12.0' // Use a Node.js image
+            args '-v /var/run/docker.sock:/var/run/docker.sock --user root' // Run as root
         }
     }
 
     environment {
-        DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials-id') // Docker Hub credentials
+        DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials-id') // Docker Hub credentials stored in Jenkins
+        DOCKER_HUB_REPO = 'mootezfarwa/noderepo' // Docker Hub repo name
     }
 
     stages {
         stage("Checkout") {
             steps {
-                checkout scm // Checkout code from source control
+                checkout scm // Checkout code from the source control
             }
         }
 
@@ -29,11 +30,12 @@ pipeline {
             }
         }
 
-
         stage("Install Dependencies") {
             steps {
                 script {
+                    // Check if npm is available
                     sh 'npm -v'
+                    // Install Node.js dependencies
                     sh 'npm install'
                 }
             }
@@ -42,12 +44,15 @@ pipeline {
         stage("Build Docker Image") {
             steps {
                 script {
+                    // Check if Docker is available
+                    sh 'docker --version'
+                    // Build the Docker image
                     sh 'docker build -t my-backend-image:latest .'
                 }
             }
         }
 
-         stage("Run Docker Container") {
+        stage("Run Docker Container") {
             steps {
                 script {
                     // Container name
@@ -72,13 +77,18 @@ pipeline {
         stage("Push Docker Image to Docker Hub") {
             steps {
                 script {
-                    sh 'docker login -u ${DOCKER_HUB_CREDENTIALS_USR} -p ${DOCKER_HUB_CREDENTIALS_PSW}'
-                    sh 'docker tag my-backend-image:latest your-docker-hub-username/repo-name:latest'
-                    sh 'docker push your-docker-hub-username/repo-name:latest'
+                    // Tag the Docker image for Docker Hub
+                    sh "docker tag my-backend-image:latest ${DOCKER_HUB_REPO}:latest"
+
+                    // Log in to Docker Hub
+                    sh "echo ${DOCKER_HUB_CREDENTIALS_PSW} | docker login -u ${DOCKER_HUB_CREDENTIALS_USR} --password-stdin"
+
+                    // Push the Docker image to Docker Hub
+                    sh "docker push ${DOCKER_HUB_REPO}:latest"
                 }
             }
         }
-    }
+     }
 
     post {
         always {
