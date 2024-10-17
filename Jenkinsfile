@@ -2,20 +2,21 @@ pipeline {
     agent {
         docker {
             image 'node:20.12.0' // Use a Node.js image
-            args '-v /var/run/docker.sock:/var/run/docker.sock --user root' // Run as root
+            args '-v /var/run/docker.sock:/var/run/docker.sock --user root' // Run as root to have Docker access
         }
     }
 
     environment {
         DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials-id') // Docker Hub credentials stored in Jenkins
-        DOCKER_HUB_REPO = 'mootezfarwa/noderepo' // Docker Hub repo name
+        DOCKER_HUB_REPO = 'mootezfarwa/noderepo' // Docker Hub repository name
         KUBECONFIG_CREDENTIALS = credentials('kubeconfig-credentials-id') // Kubeconfig credentials stored in Jenkins
     }
 
     stages {
         stage("Checkout") {
             steps {
-                checkout scm // Checkout code from the source control
+                // Checkout code from the source control (Git)
+                checkout scm
             }
         }
 
@@ -56,7 +57,6 @@ pipeline {
         stage("Run Docker Container") {
             steps {
                 script {
-                    // Container name
                     def containerName = "my-backend-container"
                     
                     // Check if the container exists
@@ -101,7 +101,8 @@ pipeline {
                     }
                 }
             }
-     }
+        }
+    }
 
     post {
         always {
@@ -116,5 +117,4 @@ pipeline {
             echo 'Build failed. Check the logs for more information.'
         }
     }
-}
 }
