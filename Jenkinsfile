@@ -15,18 +15,20 @@ pipeline {
     stages {
         stage("Checkout") {
             steps {
-                // Checkout code from the source control (Git)
-                checkout scm
+                checkout scm // Checkout code from the source control
             }
         }
 
-        stage("Install Docker") {
+        stage("Install Docker and kubectl") {
             steps {
                 script {
-                    // Update package list and install Docker
+                    // Update package list, install Docker and kubectl
                     sh '''
                     apt-get update
                     apt-get install -y docker.io
+                    curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+                    chmod +x kubectl
+                    mv kubectl /usr/local/bin/
                     '''
                 }
             }
@@ -46,31 +48,8 @@ pipeline {
         stage("Build Docker Image") {
             steps {
                 script {
-                    // Check if Docker is available
-                    sh 'docker --version'
                     // Build the Docker image
                     sh 'docker build -t my-backend-image:latest .'
-                }
-            }
-        }
-
-        stage("Run Docker Container") {
-            steps {
-                script {
-                    def containerName = "my-backend-container"
-                    
-                    // Check if the container exists
-                    def containerExists = sh(script: "docker ps -a -q -f name=${containerName}", returnStdout: true).trim()
-
-                    // Remove the existing container if it exists
-                    if (containerExists) {
-                        echo "Container ${containerName} already exists. Removing it."
-                        sh "docker rm -f ${containerName}" // Force remove the container
-                    }
-
-                    // Run the Docker container
-                    echo "Starting a new container ${containerName}."
-                    sh "docker run -d --name ${containerName} my-backend-image:latest"
                 }
             }
         }
@@ -89,7 +68,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage("Deploy to Kubernetes") {
             steps {
                 script {
