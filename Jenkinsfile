@@ -37,8 +37,6 @@ pipeline {
         stage("Install Dependencies") {
             steps {
                 script {
-                    // Check if npm is available
-                    sh 'npm -v'
                     // Install Node.js dependencies
                     sh 'npm install'
                 }
@@ -59,30 +57,41 @@ pipeline {
                 script {
                     // Tag the Docker image for Docker Hub
                     sh "docker tag my-backend-image:latest ${DOCKER_HUB_REPO}:latest"
-
-                    // Log in to Docker Hub
-                    sh "echo ${DOCKER_HUB_CREDENTIALS_PSW} | docker login -u ${DOCKER_HUB_CREDENTIALS_USR} --password-stdin"
-
+                    
                     // Push the Docker image to Docker Hub
+                    sh "echo ${DOCKER_HUB_CREDENTIALS_PSW} | docker login -u ${DOCKER_HUB_CREDENTIALS_USR} --password-stdin"
                     sh "docker push ${DOCKER_HUB_REPO}:latest"
                 }
             }
         }
 
-       stage("Deploy to Kubernetes") {
-          steps {
-              script {
-                // Use the kubeconfig for accessing the Kubernetes cluster
-                withCredentials([file(credentialsId: 'kubeconfig-credentials-id', variable: 'KUBECONFIG_FILE')]) {
-                sh '''
-                export KUBECONFIG=$KUBECONFIG_FILE
-                kubectl apply -f deployment.yaml
-                '''
+        stage("Validate Kubernetes Deployment") {
+            steps {
+                script {
+                    // Validate the deployment.yaml file
+                    withCredentials([file(credentialsId: 'kubeconfig-credentials-id', variable: 'KUBECONFIG_FILE')]) {
+                        sh '''
+                        export KUBECONFIG=$KUBECONFIG_FILE
+                        kubectl apply -f deployment.yaml --dry-run=client
+                        '''
+                    }
+                }
             }
         }
-    }
-}
 
+        stage("Deploy to Kubernetes") {
+           steps {
+               script {
+                   // Use the kubeconfig for accessing the Kubernetes cluster
+                   withCredentials([file(credentialsId: 'kubeconfig-credentials-id', variable: 'KUBECONFIG_FILE')]) {
+                       sh '''
+                       export KUBECONFIG=$KUBECONFIG_FILE
+                       kubectl apply -f deployment.yaml
+                       '''
+                   }
+               }
+           }
+        }
     }
 
     post {
