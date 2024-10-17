@@ -9,6 +9,7 @@ pipeline {
     environment {
         DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials-id') // Docker Hub credentials stored in Jenkins
         DOCKER_HUB_REPO = 'mootezfarwa/noderepo' // Docker Hub repo name
+        KUBECONFIG_CREDENTIALS = credentials('kubeconfig-credentials-id') // Kubeconfig credentials stored in Jenkins
     }
 
     stages {
@@ -88,6 +89,18 @@ pipeline {
                 }
             }
         }
+        
+        stage("Deploy to Kubernetes") {
+            steps {
+                script {
+                    // Use the kubeconfig for accessing the Kubernetes cluster
+                    withCredentials([file(credentialsId: 'kubeconfig-credentials-id', variable: 'KUBECONFIG')]) {
+                        sh '''
+                        kubectl --kubeconfig=$KUBECONFIG apply -f deployment.yaml
+                        '''
+                    }
+                }
+            }
      }
 
     post {
