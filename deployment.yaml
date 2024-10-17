@@ -22,16 +22,16 @@ spec:
         # env:  # If you have environment variables to set, add them here
         # - name: NODE_ENV
         #   value: "production"
-  
+
+---
 apiVersion: v1
 kind: Service
 metadata:
-  name: my-app-service
+  name: my-service
 spec:
   selector:
     app: my-app
   ports:
     - protocol: TCP
-      port: 80  # The port your service will be exposed on
-      targetPort: 80  # The container port your app listens to
-  type: LoadBalancer  # Expose the service as a LoadBalancer for external access
+      port: 80        # External port (the port your Service exposes)
+      targetPort: 4000 # Internal port (the port on the container)
