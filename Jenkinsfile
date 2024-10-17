@@ -69,18 +69,20 @@ pipeline {
             }
         }
 
-        stage("Deploy to Kubernetes") {
-            steps {
-                script {
-                    // Use the kubeconfig for accessing the Kubernetes cluster
-                    withCredentials([file(credentialsId: 'kubeconfig-credentials-id', variable: 'KUBECONFIG')]) {
-                        sh '''
-                        kubectl --kubeconfig=$KUBECONFIG apply -f deployment.yaml
-                        '''
-                    }
-                }
+       stage("Deploy to Kubernetes") {
+          steps {
+              script {
+                // Use the kubeconfig for accessing the Kubernetes cluster
+                withCredentials([file(credentialsId: 'kubeconfig-credentials-id', variable: 'KUBECONFIG_FILE')]) {
+                sh '''
+                export KUBECONFIG=$KUBECONFIG_FILE
+                kubectl apply -f deployment.yaml
+                '''
             }
         }
+    }
+}
+
     }
 
     post {
