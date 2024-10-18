@@ -9,7 +9,6 @@ pipeline {
     environment {
         DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials-id') // Docker Hub credentials stored in Jenkins
         DOCKER_HUB_REPO = 'mootezfarwa/noderepo' // Docker Hub repository name
-        KUBECONFIG_CREDENTIALS = credentials('jenkins-id') // Kubeconfig credentials stored in Jenkins
     }
 
     stages {
@@ -64,8 +63,6 @@ pipeline {
                 }
             }
         }
-
-    
     }
 
     post {
