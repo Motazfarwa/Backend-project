@@ -1,11 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: my-app-deployment
-  labels:
-    app: my-app
+  name: my-app
+  namespace: jenkins
 spec:
-  replicas: 3  # Number of pod replicas
+  replicas: 2
   selector:
     matchLabels:
       app: my-app
@@ -15,23 +14,21 @@ spec:
         app: my-app
     spec:
       containers:
-      - name: my-app-container
-        image: my-backend-image:latest  # Replace with your Docker image
+      - name: jenkins-docker
+        image: mootezfarwa/noderepo/my-backend-image:latest
         ports:
-        - containerPort: 4000  # The port on which your application runs
-        # env:  # If you have environment variables to set, add them here
-        # - name: NODE_ENV
-        #   value: "production"
-
+        - containerPort: 8080
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: my-service
+  name: jenkins
+  namespace: jenkins
 spec:
   selector:
     app: my-app
   ports:
     - protocol: TCP
-      port: 80        # External port (the port your Service exposes)
-      targetPort: 4000 # Internal port (the port on the container)
+      port: 8080
+      targetPort: 8080
+  type: LoadBalancer  # Change to NodePort if you don't have a cloud-based load balancer
