@@ -83,7 +83,7 @@ pipeline {
            steps {
                script {
                    // Use the kubeconfig for accessing the Kubernetes cluster
-                   withCredentials([file(credentialsId: 'kubeconfig-credentials-id', variable: 'KUBECONFIG_FILE')]) {
+                   withCredentials([file(credentialsId: 'jenkins-id', variable: 'KUBECONFIG_FILE')]) {
                        sh '''
                        export KUBECONFIG=$KUBECONFIG_FILE
                        '''
