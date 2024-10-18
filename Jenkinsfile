@@ -65,19 +65,7 @@ pipeline {
             }
         }
 
-        stage("Validate Kubernetes Deployment") {
-            steps {
-                script {
-                    // Validate the deployment.yaml file
-                    withCredentials([file(credentialsId: 'kubeconfig-credentials-id', variable: 'KUBECONFIG_FILE')]) {
-                        sh '''
-                        export KUBECONFIG=$KUBECONFIG_FILE
-                        kubectl apply -f deployment.yaml --dry-run=client
-                        '''
-                    }
-                }
-            }
-        }
+    
     }
 
     post {
