@@ -9,6 +9,7 @@ pipeline {
     environment {
         DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials-id') // Docker Hub credentials stored in Jenkins
         DOCKER_HUB_REPO = 'mootezfarwa/noderepo' // Docker Hub repository name
+        KUBECONFIG_CRED = credentials('jenkins-id') // Kubeconfig or Token Secret ID
     }
 
     stages {
@@ -60,6 +61,14 @@ pipeline {
                     // Push the Docker image to Docker Hub
                     sh "echo ${DOCKER_HUB_CREDENTIALS_PSW} | docker login -u ${DOCKER_HUB_CREDENTIALS_USR} --password-stdin"
                     sh "docker push ${DOCKER_HUB_REPO}:latest"
+                }
+            }
+        }
+        stage('Deploy to Kubernetes') {
+            steps {
+                // Deploy the application using kubectl
+                withKubeConfig([credentialsId: 'jenkins-id', serverUrl: 'https://192.168.1.76:6443']) {
+                    sh 'kubectl apply -f deployment.yaml'
                 }
             }
         }
