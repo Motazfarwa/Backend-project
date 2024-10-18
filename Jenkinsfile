@@ -78,19 +78,6 @@ pipeline {
                 }
             }
         }
-
-        stage("Deploy to Kubernetes") {
-           steps {
-               script {
-                   // Use the kubeconfig for accessing the Kubernetes cluster
-                   withCredentials([file(credentialsId: 'jenkins-id', variable: 'KUBECONFIG_FILE')]) {
-                       sh '''
-                       export KUBECONFIG=$KUBECONFIG_FILE
-                       '''
-                   }
-               }
-           }
-        }
     }
 
     post {
