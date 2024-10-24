@@ -80,7 +80,7 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 // Deploy the application using kubectl
-                withKubeConfig([credentialsId: 'jenkins-kind', serverUrl: 'https://192.168.1.76:6443']) {
+                withKubeConfig([credentialsId: 'jenkins-kind', serverUrl: 'https://192.168.1.70:6443']) {
                     sh 'kubectl apply -f deployment.yaml'
                 }
             }
