@@ -19,11 +19,6 @@ const userSchema = new Schema({
         default:"EMPLOYEE"
        },
       
-   profileImage: { type: String },
-
-   status: {
-    type: String, // online, offline
-    default: "offline"
-}
+   profileImage: { type: String }
     
 })

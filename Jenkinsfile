@@ -43,6 +43,18 @@ pipeline {
             }
         }
 
+        stage("Remove Existing Docker Image") { // New stage to remove existing images
+            steps {
+                script {
+                    sh """
+                    if docker images | grep -q 'my-backend-image'; then
+                        docker rmi -f my-backend-image:latest
+                    fi
+                    """
+                }
+            }
+        }
+
         stage("Build Docker Image") {
             steps {
                 script {
@@ -64,10 +76,11 @@ pipeline {
                 }
             }
         }
+
         stage('Deploy to Kubernetes') {
             steps {
                 // Deploy the application using kubectl
-                withKubeConfig([credentialsId: 'jenkins-kind', serverUrl: 'https://192.168.1.76:6443']) {
+                withKubeConfig([credentialsId: 'jenkins-kind', serverUrl: 'https://192.168.1.70:6443']) {
                     sh 'kubectl apply -f deployment.yaml'
                 }
             }
