@@ -1,10 +1,10 @@
-name: myfirstsetup
+name: Node.js CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build:
@@ -22,7 +22,6 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
           
-      # Check if dependencies are missing and install them if necessary
       - name: Install dependencies if not present
         run: |
           if [ ! -d "node_modules" ]; then
