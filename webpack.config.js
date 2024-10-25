@@ -1,34 +1,21 @@
-name: Node.js CI
+const path = require('path');
 
-on:
-  push:
-    branches: ["main"]
-  pull_request:
-    branches: ["main"]
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x, 22.x]
-
-    steps:
-      - uses: actions/checkout@v4
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-          
-      - name: Install dependencies if not present
-        run: |
-          if [ ! -d "node_modules" ]; then
-            npm install
-          else
-            echo "Dependencies already installed."
-          fi
-
-      - run: npm run build --if-present
-      - run: npm test
+module.exports = {
+  entry: './app.js', // Adjust this path if your entry file is elsewhere
+  output: {
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'dist'), // Output directory
+  },
+  mode: 'production', // Change to 'development' if needed
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader', // Install babel-loader if using ES6/React
+        },
+      },
+    ],
+  },
+};
