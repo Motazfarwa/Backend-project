@@ -9,9 +9,12 @@ module.exports = {
   },
   resolve: {
     fallback: {
-      buffer: require.resolve('buffer'), // Correct path for the buffer module
-      vm: require.resolve('vm-browserify'), // Ensure this is included if needed
-      // Add other fallbacks if necessary
+        buffer: require.resolve('buffer'),
+        process: require.resolve('process/browser'),
+        vm: require.resolve('vm-browserify'),
+        stream: require.resolve('stream-browserify'),
+        assert: require.resolve('assert'),
+        crypto: require.resolve('crypto-browserify'),
     },
   },
   module: {
