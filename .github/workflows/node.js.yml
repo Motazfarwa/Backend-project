@@ -23,8 +23,8 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
 
-      - name: Install dependencies if not present
-        run: npm i
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
 
       - run: npm run build --if-present
 
