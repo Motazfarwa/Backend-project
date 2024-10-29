@@ -9,12 +9,18 @@ module.exports = {
   },
   resolve: {
     fallback: {
-        buffer: require.resolve('buffer'),
-        process: require.resolve('process/browser'),
-        vm: require.resolve('vm-browserify'),
-        stream: require.resolve('stream-browserify'),
-        assert: require.resolve('assert'),
-        crypto: require.resolve('crypto-browserify'),
+      path: require.resolve('path-browserify'),
+      buffer: require.resolve('buffer'),
+      process: require.resolve('process/browser'),
+      vm: require.resolve('vm-browserify'),
+      stream: require.resolve('stream-browserify'),
+      assert: require.resolve('assert'),
+      crypto: require.resolve('crypto-browserify'),
+      zlib: require.resolve('browserify-zlib'),
+      querystring: require.resolve('querystring-es3'),
+      fs: false, // or require.resolve('browserify-fs') if you need fs polyfills
+      http: require.resolve('stream-http'), // or any alternative you need
+      https: require.resolve('https-browserify'),
     },
   },
   module: {
