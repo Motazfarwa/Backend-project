@@ -29,7 +29,7 @@
     "vm-browserify": "^1.1.0",
     "assert": "^2.0.6",
     "stream-http":"^3.0.0",
-    "https-browserify":"^3.0.0"
+    "https-browserify": "^1.0.0",
   },
   "devDependencies": {
     "@babel/core": "^7.25.9",
