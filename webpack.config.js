@@ -1,11 +1,11 @@
 const path = require('path');
 
 module.exports = {
-  mode: 'development', // Change to 'production' for production builds
-  entry: './app.js', // The entry point of your application
+  mode: 'development', // Use 'production' for production builds
+  entry: './app.js',
   output: {
-    filename: 'bundle.js', // The name of the output bundle
-    path: path.resolve(__dirname, 'dist'), // Output directory
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'dist'),
   },
   resolve: {
     fallback: {
@@ -18,26 +18,27 @@ module.exports = {
       crypto: require.resolve('crypto-browserify'),
       zlib: require.resolve('browserify-zlib'),
       querystring: require.resolve('querystring-es3'),
-      fs: false, // or require.resolve('browserify-fs') if you need fs polyfills
-      http: require.resolve('stream-http'), // or any alternative you need
+      url: require.resolve('url'), // Polyfill for 'url'
+      fs: false, // Set to false if not needed
+      net: false, // Not supported in the browser, set to false
+      tls: false, // Not supported in the browser, set to false
+      http: require.resolve('stream-http'), // For HTTP requests in a browser-like environment
       https: require.resolve('https-browserify'),
-      net: false, // Set to false if you don't need net, as it’s not well-supported in the browser
-      url: require.resolve('url') // Polyfill for the 'url' module
     },
   },
   module: {
     rules: [
       {
-        test: /\.js$/, // Transform all .js files
+        test: /\.js$/,
         exclude: /node_modules/,
         use: {
-          loader: 'babel-loader', // Use Babel to transpile JavaScript
+          loader: 'babel-loader',
           options: {
-            presets: ['@babel/preset-env'], // Use the env preset
+            presets: ['@babel/preset-env'],
           },
         },
       },
     ],
   },
-  devtool: 'source-map', // Enable source maps for easier debugging
+  devtool: 'source-map', // Enable source maps for debugging
 };
