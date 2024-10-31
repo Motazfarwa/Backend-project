@@ -21,6 +21,8 @@ module.exports = {
       fs: false, // or require.resolve('browserify-fs') if you need fs polyfills
       http: require.resolve('stream-http'), // or any alternative you need
       https: require.resolve('https-browserify'),
+      net: false, // Set to false if you don't need net, as it’s not well-supported in the browser
+      url: require.resolve('url') // Polyfill for the 'url' module
     },
   },
   module: {
