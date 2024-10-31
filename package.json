@@ -2,10 +2,11 @@
   "name": "backend-project",
   "version": "0.0.0",
   "private": true,
-  "scripts": {
-    "start": "node app.js",
-    "build": "webpack --config webpack.config.js",
-    "dev": "nodemon --env-file=.env.production ./bin/www"
+ "scripts": {
+  "start": "node app.js",
+  "build": "webpack --config webpack.config.js",
+  "dev": "nodemon --env-file=.env.production ./bin/www",
+  "test": "echo \"Error: no test specified\" && exit 1" // Placeholder
   },
   "dependencies": {
     "browserify-zlib": "^0.2.0",
